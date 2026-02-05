@@ -1,0 +1,104 @@
+:root {
+  --bg-color: #f8fafc;
+  --card-bg: #ffffff;
+  --border-color: #e2e8f0;
+  --text-main: #1e293b;
+  --text-muted: #64748b;
+  --primary-blue: #2563eb;
+}
+
+.timeline-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  background-color: var(--bg-color);
+  font-family: sans-serif;
+}
+
+.timeline-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.timeline-card-header {
+  display: flex;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.calendar-icon {
+  margin-right: 10px;
+  color: var(--text-muted);
+}
+
+.timeline-day-header {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0;
+}
+
+.event-count {
+  font-weight: 400;
+  color: var(--text-muted);
+  margin-left: 6px;
+}
+
+
+.timeline-day-events {
+  position: relative;
+  padding: 20px 0;
+}
+
+.timeline-vertical-line {
+  position: absolute;
+  left: 88px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background-color: var(--border-color);
+}
+
+.timeline-event-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.timeline-event {
+  display: flex;
+  align-items: flex-start;
+  padding: 12px 0;
+  position: relative;
+  list-style-type: none;
+  cursor: pointer;
+}
+
+.timeline-event-time {
+  width: 80px;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--text-main);
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+.timeline-event-content {
+  padding-left: 30px;
+  flex: 1;
+}
+
+.timeline-event-dot {
+  position: absolute;
+  left: 84px;
+  top: 18px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  z-index: 2;
+}
