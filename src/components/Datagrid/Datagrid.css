@@ -1,0 +1,132 @@
+.datagrid-container {
+    display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+
+.datagrid-header {
+  display: flex;
+  gap: 16px;
+  padding: 12px 16px;
+  background-color: #ffffff;
+  border: 1px solid #e6e8eb;
+  border-radius: 8px;
+ 
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+    font-family: var(--font-ui);
+  font-variant-numeric: tabular-nums;
+}
+
+
+
+thead th {
+  background: #2f2b43; 
+  color: #ffffff;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-bottom: none;
+}
+
+thead input {
+  width: 90%;
+  padding: 4px;
+  font-size: 12px;
+}
+
+tbody td {
+  padding: 12px;
+  font-size: 14px;
+  color: #333;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+tbody tr:nth-child(even) {
+  background: #fafafa;
+}
+
+tbody tr:hover {
+  background: #f3f4f8;
+}
+
+.pagination {
+  margin-top: 10px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+button {
+  padding: 6px 10px;
+  cursor: pointer;
+}
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.datagrid-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  
+  background: #ffffff;
+  border: 1px solid #e6e8eb;
+  border-radius: 8px;
+
+   flex-shrink: 0;
+   margin-top: 1rem;
+}
+
+.page-count-label {
+   display: flex;
+   align-items: center;
+}
+
+.datagrid-filter {
+    display: flex;
+    flex-direction: column;
+}
+
+.datagrid-filter label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #555;
+  margin-bottom: 4px;
+}
+
+.datagrid-filter select {
+  min-width: 140px;
+  height: 34px;
+  padding-left: 8px;
+  padding-right: 36px; 
+  font-size: 13px;
+  border-radius: 6px;
+  border: 1px solid #d0d5dd;
+  background-color: #fff;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 12px;
+  box-sizing: border-box;
+}
+.datagrid-body {
+  background: #ffffff;
+  border: 1px solid #e6e8eb;
+  border-radius: 8px;
+  flex: 1 1 auto;
+  overflow-y: auto;
+}
