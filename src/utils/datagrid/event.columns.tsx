@@ -13,7 +13,8 @@ export const eventColumns: Column<EventItem>[] = [
   {
     key: 'owner',
     label: 'Owner',
-    accessor: (row) => row.owner ?? '—'
+    accessor: (row) => row.owner ?? '—',
+    filtered: true
   },
 
     {
@@ -78,4 +79,18 @@ export const eventColumns: Column<EventItem>[] = [
     sortable: true,
     filtered: true
   },
+    {
+    key: 'Delete',
+    label: '',
+    accessor: (row) => {
+      return ( 
+      <>
+      <span className="material-icons text-[#0056b3] cursor-pointer">edit</span>
+      <span className="material-icons text-[#E60000] cursor-pointer">delete</span>
+      </>
+      ) }
+    
+  }
+   
+  
 ];
