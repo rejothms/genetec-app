@@ -1,15 +1,21 @@
 
 import { EventDashboard } from '@/components/EventDashboard/EventDashboard';
-import eventsData from '@/mock/events.json'
-import { EventItem, EventOwner, EventPriority, EventStatus } from '@/types/events';
 
-export default function Home() {
-  const events: EventItem[] = eventsData.map(e => ({
-    ...e,
-    owner: e.owner as EventOwner,
-    status: e.status as EventStatus,
-    priority: e.priority as EventPriority
-  }))
+import { EventItem } from '@/types/events';
+
+async function getEvents(): Promise<EventItem[]> {
+  const res = await fetch("http://localhost:3000/api/event", {
+    cache: "no-store",
+  });
+  if (!res.ok) {
+    throw new Error("Failed to fetch events");
+  }
+
+  return res.json();
+}
+
+export default async function Home() {
+  const events = await getEvents();
 
   return (
     <div className="min-h-screen w-full bg-zinc-50">

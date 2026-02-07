@@ -11,9 +11,9 @@ export const eventColumns: Column<EventItem>[] = [
     filtered: false
   },
   {
-    key: 'description',
-    label: 'Description',
-    accessor: (row) => row.description ?? '—'
+    key: 'owner',
+    label: 'Owner',
+    accessor: (row) => row.owner ?? '—'
   },
 
     {

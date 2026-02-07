@@ -15,6 +15,20 @@ export default function TabView({ events }: { events: EventItem[] }) {
   const [eventList, setEventList] =
     useState<EventItem[]>(events);
 
+  const handleSubmit = async (event: EventItem) => {
+
+    const res = await fetch("/api/event", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(event),
+    });
+
+    if (!res.ok) {
+      return;
+    }
+    setEventList((events) => [...events, event]);
+  };
+
   return (
     <div className="w-full mt-8">
 
@@ -67,9 +81,7 @@ export default function TabView({ events }: { events: EventItem[] }) {
       {showAddEvent && (
         <CreateEventModal
           onClose={() => setShowAddEvent(false)}
-          onSubmit={(event) =>
-            setEventList((prev) => [...prev, event])
-          }
+          onSubmit={(event) => handleSubmit(event)}
         />
       )}
     </div>

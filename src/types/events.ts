@@ -33,7 +33,7 @@ export interface EventItem {
     owner: EventOwner;
     status: EventStatus;
     priority: EventPriority;
-    createdAt: string;
+    createdAt?: string;
    
 }
 
