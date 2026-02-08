@@ -86,14 +86,6 @@ export function CreateEventModal({
   const handleSubmit = () => {
     if (!validate()) return;
 
-    const startAt = new Date(
-      `${date}T${startTime}`
-    ).toISOString();
-
-    const endAt = endTime
-      ? new Date(`${date}T${endTime}`).toISOString()
-      : undefined;
-
     const newEvent: EventItem = {
       id: selectedEvent?.id ?? `evt-${crypto.randomUUID().slice(0, 6)}`,
       title,

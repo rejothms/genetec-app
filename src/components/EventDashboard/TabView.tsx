@@ -98,6 +98,7 @@ export default function TabView({ events }: { events: EventItem[] }) {
               className="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-md hover:bg-blue-700 transition"
               onClick={() => {
                 setShowAddEvent(true)
+                setSelectedEvent(null);
               }}
             >
               Create Event
@@ -105,7 +106,7 @@ export default function TabView({ events }: { events: EventItem[] }) {
           </div>
         </div>
       </div>
-      <div className="md:px-40 mx-auto p-6">
+      <div className="xl:px-40 mx-auto p-6">
         {activeTab === "dashboard" && (
           <Datagrid data={eventList} columns={updatedColumns} />
         )}
