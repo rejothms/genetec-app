@@ -7,12 +7,29 @@
 
 .datagrid-header {
   display: flex;
-  gap: 16px;
+  justify-content: space-between;
   padding: 12px 16px;
   background-color: #ffffff;
   border: 1px solid #e6e8eb;
   border-radius: 8px;
- 
+  flex-wrap: wrap;
+}
+
+.datagrid-filters {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.datagrid-search {
+  padding: 6px 12px;
+  margin-top: 18px;
+  font-size: 13px;
+  border-radius: 6px;
+  border: 1px solid #d0d5dd;
+  align-items: center;
+  width: 200px;
 }
 
 table {
@@ -35,6 +52,7 @@ thead th {
   text-transform: uppercase;
   letter-spacing: 0.04em;
   border-bottom: none;
+  cursor: pointer;
 }
 
 thead input {
@@ -129,4 +147,27 @@ button:disabled {
   border-radius: 8px;
   flex: 1 1 auto;
   overflow-y: auto;
+}
+
+.sort-indicator {
+  width: 10px;
+  height: 10px;
+  margin-left: 6px;
+  position: relative;
+  top: 5px;
+  display: inline-block;
+
+  background-color: currentColor;
+
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 9L12 15L18 9' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat center / contain;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 9L12 15L18 9' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat center / contain;
+
+  transition: transform 0.2s ease;
+}
+.rotate-up {
+  transform: rotate(180deg); 
+}
+
+.rotate-down {
+  transform: rotate(0deg); 
 }

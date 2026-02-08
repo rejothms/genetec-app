@@ -10,6 +10,7 @@ import {
 
 
 interface CreateEventModalProps {
+  selectedEvent?: EventItem | null;
   onClose: () => void;
   onSubmit: (event: EventItem) => void;
 }
@@ -28,23 +29,23 @@ type FormErrors = Partial<
 
 
 export function CreateEventModal({
+  selectedEvent,
   onClose,
   onSubmit,
 }: CreateEventModalProps) {
 
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-
-  const [date, setDate] = useState("");
-  const [startTime, setStartTime] = useState("");
-  const [endTime, setEndTime] = useState("");
+  const [title, setTitle] = useState(selectedEvent?.title || "");
+  const [description, setDescription] = useState(selectedEvent?.description || "");
+  const [date, setDate] = useState(selectedEvent?.startAt ? new Date(selectedEvent.startAt).toISOString().split('T')[0] : "");
+  const [startTime, setStartTime] = useState(selectedEvent?.startAt ? selectedEvent.startAt.split("T")[1].slice(0, 5) : "");
+  const [endTime, setEndTime] = useState(selectedEvent?.endAt ? selectedEvent.endAt.split("T")[1].slice(0, 5) : "");
 
   const [priority, setPriority] = useState<EventPriority>(
-    EventPriority.MEDIUM
+     selectedEvent?.priority || EventPriority.MEDIUM
   );
 
   const [owner, setOwner] = useState<EventOwner>(
-    EventOwner.MonitoringTeam
+    selectedEvent?.owner || EventOwner.MonitoringTeam
   );
 
   const [errors, setErrors] = useState<FormErrors>({});
@@ -94,7 +95,7 @@ export function CreateEventModal({
       : undefined;
 
     const newEvent: EventItem = {
-      id: `evt-${crypto.randomUUID().slice(0, 6)}`,
+      id: selectedEvent?.id ?? `evt-${crypto.randomUUID().slice(0, 6)}`,
       title,
       description: description || undefined,
       startAt: new Date(`${date}T${startTime}`).toISOString(),
@@ -113,7 +114,7 @@ export function CreateEventModal({
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg w-full max-w-lg p-6 space-y-4">
-        <h2 className="text-lg font-semibold">Add Event</h2>
+        <h2 className="text-lg font-semibold">{selectedEvent ? 'Edit Event' : 'Add Event'}</h2>
 
 
         <div>
@@ -264,7 +265,7 @@ export function CreateEventModal({
             onClick={handleSubmit}
             className="px-4 py-2 text-sm bg-blue-600 text-white rounded"
           >
-            Create Event
+           {selectedEvent ? 'Update' : 'Create'}
           </button>
         </div>
       </div>

@@ -34,7 +34,7 @@ export interface EventItem {
     status: EventStatus;
     priority: EventPriority;
     createdAt?: string;
-   
+    updatedAt?: string;
 }
 
 

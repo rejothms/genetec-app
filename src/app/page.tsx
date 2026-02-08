@@ -2,6 +2,8 @@
 import { EventDashboard } from '@/components/EventDashboard/EventDashboard';
 
 import { EventItem } from '@/types/events';
+import { Suspense } from 'react';
+import LoadingSpinner from './loading';
 
 async function getEvents(): Promise<EventItem[]> {
   const res = await fetch("http://localhost:3000/api/event", {
@@ -14,14 +16,23 @@ async function getEvents(): Promise<EventItem[]> {
   return res.json();
 }
 
-export default async function Home() {
+async function EventsWrapper() {
   const events = await getEvents();
+  return <EventDashboard events={events} />;
+}
+
+export default async function Home() {
+
 
   return (
     <div className="min-h-screen w-full bg-zinc-50">
       <main className="min-h-screen w-full">
-         <EventDashboard events={events} />
+         <Suspense fallback={<LoadingSpinner />}>
+         <EventsWrapper />
+        </Suspense>
+         
       </main>
     </div>
   );
 }
+

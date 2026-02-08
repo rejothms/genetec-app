@@ -4,6 +4,7 @@ import { DataGridProps } from "./Datagrid.types";
 import './Datagrid.css'
 import { useEffect, useMemo, useState } from "react";
 import { Pagination } from "./Pagination";
+import { cp } from "fs";
 
 export const Datagrid = <T,>(
   props: DataGridProps<T>
@@ -13,6 +14,9 @@ export const Datagrid = <T,>(
   const [currentPage, setCurrentPage] = useState(1);
   const [filters, setFilters] = useState<Record<string, string>>({});
 
+
+  const [sortKey, setSortKey] = useState<string | null>(null);
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
 
   const filterOptions = useMemo(() => {
@@ -39,24 +43,72 @@ export const Datagrid = <T,>(
 
 
 
-const displayData = useMemo(() => {
+  const displayData = useMemo(() => {
     let filteredData = [...data];
 
     Object.keys(filters).forEach((key) => {
-        const filterValue = filters[key];
-        if (filterValue) {
-            filteredData = filteredData.filter((row) => {
-                const column = displayColumns.find((col) => col.key === key);
-                if (!column) return true;
+      const filterValue = filters[key];
+      if (filterValue) {
+        filteredData = filteredData.filter((row) => {
+          const column = displayColumns.find((col) => col.key === key);
+          if (!column) return true;
 
-                const value = column.accessor(row);
-                return String(value) === filterValue;
-            });
-        }
+          const value = column.accessor(row);
+          return String(value) === filterValue;
+        });
+      }
     });
 
+    const searchValue = filters['search'];
+    if (searchValue) {
+      const searchableColumns = displayColumns.filter((col) => col.searchable);
+      filteredData = filteredData.filter((row) =>
+        searchableColumns.some((col) => {
+          const value = col.accessor(row);
+          return value
+            ? String(value).toLowerCase().includes(searchValue.toLowerCase())
+            : false;
+        })
+      );
+    }
+
+
+    if (sortKey) {
+      const column = displayColumns.find((col) => col.key === sortKey);
+      if (column) {
+        filteredData.sort((a, b) => {
+          const aValue = column.accessor(a);
+          const bValue = column.accessor(b);
+
+          if (aValue == null) return 1;
+          if (bValue == null) return -1;
+
+          if (typeof aValue === 'number' && typeof bValue === 'number') {
+            return sortOrder === 'asc' ? aValue - bValue : bValue - aValue;
+          }
+
+          return sortOrder === 'asc'
+            ? String(aValue).localeCompare(String(bValue))
+            : String(bValue).localeCompare(String(aValue));
+        });
+      }
+    }
+
+
     return filteredData;
-}, [data, filters, displayColumns]);
+  }, [data, filters, displayColumns]);
+
+
+  const handleSort = (key: string, sortable = false) => {
+    if (!sortable) return;
+    setCurrentPage(1);
+    if (sortKey === key) {
+      setSortOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'));
+    } else {
+      setSortKey(key);
+      setSortOrder('asc');
+    }
+  };
 
   const totalPages = Math.ceil(displayData.length / pageSize);
   const paginated = displayData.slice(
@@ -74,37 +126,50 @@ const displayData = useMemo(() => {
     <main className="datagrid-container">
 
       <section className="datagrid-header">
-        {displayColumns
-          .filter((col) => col.filtered)
-          .map((col) => (
-            <div key={col.key} className="datagrid-filter">
-              <label>{col.label}</label>
-              <select
-                value={filters[col.key] ?? ''}
-                onChange={(e) => {
-                  setFilters((prev) => ({
-                    ...prev,
-                    [col.key]: e.target.value,
-                  }));
-                  setCurrentPage(1);
-                }}
-              >
-                <option value="">All</option>
-                {filterOptions[col.key]?.map((value) => (
-                  <option key={value} value={value}>
-                    {value}
-                  </option>
-                ))}
-              </select>
-            </div>
-          ))}
+        <div className="datagrid-filters">
+          {displayColumns
+            .filter((col) => col.filtered)
+            .map((col) => (
+              <div key={col.key} className="datagrid-filter">
+                <label>{col.label}</label>
+                <select
+                  value={filters[col.key] ?? ''}
+                  onChange={(e) => {
+                    setFilters((prev) => ({
+                      ...prev,
+                      [col.key]: e.target.value,
+                    }));
+                    setCurrentPage(1);
+                  }}
+                >
+                  <option value="">All</option>
+                  {filterOptions[col.key]?.map((value) => (
+                    <option key={value} value={value}>
+                      {value}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            ))}
+        </div>
+
+        <div>
+          <input type="text" placeholder="Search..." className="datagrid-search" onChange={(e) => {
+            const value = e.target.value;
+            setFilters((prev) => ({
+              ...prev,
+              search: value
+            }));
+          }} />
+        </div>
       </section>
       <section className="datagrid-body">
         <table>
           <thead>
             <tr>
               {displayColumns.map((col) => (
-                <th key={col.key}>{col.label}</th>
+                <th key={col.key} onClick={() => handleSort(col.key, col.sortable)}>{col.label}{col.sortable && col.key === sortKey && <span className={`sort-indicator ${sortOrder === "asc" ? "rotate-up" : "rotate-down"
+                  }`}>-</span>}</th>
               ))}
             </tr>
           </thead>

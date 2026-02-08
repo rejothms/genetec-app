@@ -20,8 +20,6 @@ export function groupedByDay(events: EventItem[]): Record<string, EventItem[]> {
 }
 
 
-
-
 export function formatDayLabel(dateString: string) {
   const date = new Date(dateString);
   const today = new Date();
@@ -29,6 +27,6 @@ export function formatDayLabel(dateString: string) {
 
 
   return isToday
-    ? `Today · ${date.toLocaleDateString()}`
+    ? `Today - ${date.toLocaleDateString()}`
     : date.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
 }

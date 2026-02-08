@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { Datagrid } from "../Datagrid/Datagrid";
 import { EventItem } from "@/types/events";
 import { eventColumns } from "@/utils/datagrid/event.columns";
@@ -7,26 +8,60 @@ import { TimeLine } from "../Timeline/Timeline";
 import { CreateEventModal } from "../CreateEvent/CreateEvent";
 
 export default function TabView({ events }: { events: EventItem[] }) {
-  const [activeTab, setActiveTab] =
-    useState<"dashboard" | "timeline">("dashboard");
-  const [showAddEvent, setShowAddEvent] =
-    useState<boolean>(false);
+  const [activeTab, setActiveTab] = useState<"dashboard" | "timeline">("dashboard");
+  const [showAddEvent, setShowAddEvent] = useState<boolean>(false);
+  const [eventList, setEventList] = useState<EventItem[]>(events);
+  const [selectedEvent, setSelectedEvent] = useState<EventItem | null>(null);
+  const updatedColumns = eventColumns({ onEdit: handleEdit, onDelete: handleDelete });
 
-  const [eventList, setEventList] =
-    useState<EventItem[]>(events);
+  function handleEdit(row: EventItem) {
+    setSelectedEvent(row);
+    setShowAddEvent(true);
+  }
+
+  async function handleDelete(row: EventItem) {
+    const res = await fetch(`/api/event/${row.id}`, {
+      method: "DELETE",
+    });
+    if (!res.ok) {
+      toast.error("Failed to delete event");
+      return;
+    }
+    toast.success("Event deleted successfully");
+    setEventList((events) => events.filter((e) => e.id !== row.id));
+  }
 
   const handleSubmit = async (event: EventItem) => {
 
-    const res = await fetch("/api/event", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(event),
-    });
-
-    if (!res.ok) {
-      return;
+    let res;
+    if (selectedEvent) {
+      res = await fetch(`/api/event/${event.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(event),
+      });
+      if (!res.ok) {
+        toast.error("Failed to update event");
+        return;
+      }
+      toast.success("Event updated successfully");
+      setEventList((events) =>
+        events.map((e) => (e.id === event.id ? event : e))
+      );
+    } else {
+      res = await fetch("/api/event", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(event),
+      });
+      if (!res.ok) {
+        toast.error("Failed to create event");
+        return;
+      }
+      toast.success("Event created successfully");
+      setEventList((events) => [...events, event]);
     }
-    setEventList((events) => [...events, event]);
+    setSelectedEvent(null);
   };
 
   return (
@@ -72,7 +107,7 @@ export default function TabView({ events }: { events: EventItem[] }) {
       </div>
       <div className="md:px-40 mx-auto p-6">
         {activeTab === "dashboard" && (
-          <Datagrid data={eventList} columns={eventColumns} />
+          <Datagrid data={eventList} columns={updatedColumns} />
         )}
 
         {activeTab === "timeline" && <TimeLine events={eventList} />}
@@ -82,6 +117,7 @@ export default function TabView({ events }: { events: EventItem[] }) {
         <CreateEventModal
           onClose={() => setShowAddEvent(false)}
           onSubmit={(event) => handleSubmit(event)}
+          selectedEvent={selectedEvent}
         />
       )}
     </div>

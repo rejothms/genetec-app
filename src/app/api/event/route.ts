@@ -1,25 +1,12 @@
 import { NextResponse } from "next/server";
 import {
     EventItem,
-    EventOwner,
-    EventPriority,
-    EventStatus,
 } from "@/types/events";
-import eventsData from '@/mock/events.json'
-
-const events: EventItem[] = eventsData.map(e => ({
-    ...e,
-    owner: e.owner as EventOwner,
-    status: e.status as EventStatus,
-    priority: e.priority as EventPriority
-}))
-
+import { addEvent, getEvents } from "@/lib/eventStore";
 
 export async function GET() {
-    
-    const sortedEvents = events.sort((a, b) => new Date(a.startAt).getDate() - new Date(b.startAt).getDate());
-
-    return NextResponse.json(events);
+    const sortedEvents = getEvents().sort((a, b) => new Date(a.startAt).getTime() - new Date(b.startAt).getTime());
+    return NextResponse.json(sortedEvents);
 }
 
 
@@ -38,7 +25,8 @@ export async function POST(req: Request) {
         createdAt: new Date().toISOString(),
     };
 
-    events.push(newEvent);
+    addEvent(newEvent);
 
     return NextResponse.json(newEvent, { status: 201 });
 }
+
