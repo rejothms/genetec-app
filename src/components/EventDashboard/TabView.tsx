@@ -20,19 +20,21 @@ export default function TabView({ events }: { events: EventItem[] }) {
   }
 
   async function handleDelete(row: EventItem) {
+    const toastId = toast.loading("Deleting event...");
+
     const res = await fetch(`/api/event/${row.id}`, {
       method: "DELETE",
     });
     if (!res.ok) {
-      toast.error("Failed to delete event");
+      toast.error("Failed to delete event", { id: toastId });
       return;
     }
-    toast.success("Event deleted successfully");
+    toast.success("Event deleted successfully", { id: toastId });
     setEventList((events) => events.filter((e) => e.id !== row.id));
   }
 
   const handleSubmit = async (event: EventItem) => {
-
+    const toastId = toast.loading("Saving event...");
     let res;
     if (selectedEvent) {
       res = await fetch(`/api/event/${event.id}`, {
@@ -41,10 +43,10 @@ export default function TabView({ events }: { events: EventItem[] }) {
         body: JSON.stringify(event),
       });
       if (!res.ok) {
-        toast.error("Failed to update event");
+        toast.error("Failed to update event", { id: toastId });
         return;
       }
-      toast.success("Event updated successfully");
+      toast.success("Event updated successfully", { id: toastId });
       setEventList((events) =>
         events.map((e) => (e.id === event.id ? event : e))
       );
@@ -55,10 +57,10 @@ export default function TabView({ events }: { events: EventItem[] }) {
         body: JSON.stringify(event),
       });
       if (!res.ok) {
-        toast.error("Failed to create event");
+        toast.error("Failed to create event", { id: toastId });
         return;
       }
-      toast.success("Event created successfully");
+      toast.success("Event created successfully", { id: toastId });
       setEventList((events) => [...events, event]);
     }
     setSelectedEvent(null);
@@ -70,8 +72,12 @@ export default function TabView({ events }: { events: EventItem[] }) {
       <div className="w-full border-b border-gray-200">
         <div className="flex items-center px-6 mx-auto">
 
-          <div className="flex">
+          <div className="flex" role="tablist" aria-label="Event Dashboard Tabs">
             <button
+              id="tab-dashboard"
+              role="tab"
+              aria-selected={activeTab === "dashboard"}
+              aria-controls="dashboard-panel"
               onClick={() => setActiveTab("dashboard")}
               className={`px-4 py-3 text-sm font-medium transition
                 ${activeTab === "dashboard"
@@ -83,6 +89,10 @@ export default function TabView({ events }: { events: EventItem[] }) {
             </button>
 
             <button
+              id="tab-timeline"
+              role="tab"
+              aria-selected={activeTab === "timeline"}
+              aria-controls="timeline-panel"
               onClick={() => setActiveTab("timeline")}
               className={`px-4 py-3 text-sm font-medium transition
                 ${activeTab === "timeline"
@@ -108,10 +118,18 @@ export default function TabView({ events }: { events: EventItem[] }) {
       </div>
       <div className="xl:px-40 mx-auto p-6">
         {activeTab === "dashboard" && (
-          <Datagrid data={eventList} columns={updatedColumns} />
+          <div id="panel-dashboard" role="tabpanel" aria-labelledby="tab-dashboard">
+            <Datagrid data={eventList} columns={updatedColumns} />
+          </div>
+
         )}
 
-        {activeTab === "timeline" && <TimeLine events={eventList} />}
+        {activeTab === "timeline" && (
+          <div id="panel-timeline" role="tabpanel" aria-labelledby="tab-timeline">
+            <TimeLine events={eventList} />
+          </div>
+        )
+        }
       </div>
 
       {showAddEvent && (

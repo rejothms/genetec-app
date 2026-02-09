@@ -11,7 +11,7 @@ export function groupedByDay(events: EventItem[]): Record<string, EventItem[]> {
   }, {} as Record<string, EventItem[]>);
 
 
-    Object.keys(grouped).forEach(dateKey => {
+  Object.keys(grouped).forEach(dateKey => {
     grouped[dateKey].sort(
       (a, b) => new Date(a.startAt).getTime() - new Date(b.startAt).getTime()
     );
@@ -28,5 +28,14 @@ export function formatDayLabel(dateString: string) {
 
   return isToday
     ? `Today - ${date.toLocaleDateString()}`
-    : date.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
+    : date.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
 }
+
+export const getStatusColor = (priority: string) => {
+  switch (priority.toLowerCase()) {
+    case 'high': return '#ef4444';
+    case 'medium': return '#f59e0b';
+    case 'low': return '#9ca3af';
+    default: return '#10b981';
+  }
+};

@@ -59,6 +59,9 @@ export const Datagrid = <T,>(
       }
     });
 
+
+
+
     const searchValue = filters['search'];
     if (searchValue) {
       const searchableColumns = displayColumns.filter((col) => col.searchable);
@@ -83,16 +86,43 @@ export const Datagrid = <T,>(
           if (aValue == null) return 1;
           if (bValue == null) return -1;
 
-          if (typeof aValue === 'number' && typeof bValue === 'number') {
-            return sortOrder === 'asc' ? aValue - bValue : bValue - aValue;
+          if (sortKey.toLowerCase().includes("date")) {
+            let timeA = 0;
+            let timeB = 0;
+
+
+            if (
+              aValue instanceof Date ||
+              typeof aValue === "string" ||
+              typeof aValue === "number"
+            ) {
+              const parsedA = new Date(aValue);
+              if (!isNaN(parsedA.getTime())) timeA = parsedA.getTime();
+            }
+
+            if (
+              bValue instanceof Date ||
+              typeof bValue === "string" ||
+              typeof bValue === "number"
+            ) {
+              const parsedB = new Date(bValue);
+              if (!isNaN(parsedB.getTime())) timeB = parsedB.getTime();
+            }
+
+            return sortOrder === "asc" ? timeA - timeB : timeB - timeA;
           }
 
-          return sortOrder === 'asc'
+          if (typeof aValue === "number" && typeof bValue === "number") {
+            return sortOrder === "asc" ? aValue - bValue : bValue - aValue;
+          }
+
+          return sortOrder === "asc"
             ? String(aValue).localeCompare(String(bValue))
             : String(bValue).localeCompare(String(aValue));
         });
       }
     }
+
 
 
     return filteredData;
@@ -109,6 +139,13 @@ export const Datagrid = <T,>(
       setSortOrder('asc');
     }
   };
+
+  useEffect(() => {
+    const totalPages = Math.ceil(data.length / pageSize);
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages || 1);
+    }
+  }, [data, pageSize]);
 
   const totalPages = Math.ceil(displayData.length / pageSize);
   const paginated = displayData.slice(
@@ -131,8 +168,9 @@ export const Datagrid = <T,>(
             .filter((col) => col.filtered)
             .map((col) => (
               <div key={col.key} className="datagrid-filter">
-                <label>{col.label}</label>
+                <label htmlFor={`filter-${col.key}`}>{col.label}</label>
                 <select
+                  id={`filter-${col.key}`}
                   value={filters[col.key] ?? ''}
                   onChange={(e) => {
                     setFilters((prev) => ({
@@ -154,7 +192,7 @@ export const Datagrid = <T,>(
         </div>
 
         <div>
-          <input type="text" placeholder="Search..." className="datagrid-search" onChange={(e) => {
+          <input aria-label="search-table" type="text" placeholder="Search..." className="datagrid-search" onChange={(e) => {
             const value = e.target.value;
             setFilters((prev) => ({
               ...prev,
@@ -164,23 +202,39 @@ export const Datagrid = <T,>(
         </div>
       </section>
       <section className="datagrid-body">
-        <table>
+        <table aria-label="events table">
           <thead>
             <tr>
               {displayColumns.map((col) => (
-                <th key={col.key} onClick={() => handleSort(col.key, col.sortable)}>{col.label}{col.sortable && col.key === sortKey && <span className={`sort-indicator ${sortOrder === "asc" ? "rotate-up" : "rotate-down"
-                  }`}>-</span>}</th>
+                <th aria-sort={
+                  col.sortable && col.key === sortKey
+                    ? sortOrder === "asc"
+                      ? "ascending"
+                      : "descending"
+                    : "none"
+                } key={col.key} onClick={() => handleSort(col.key, col.sortable)}>
+                  {col.label}{col.sortable && col.key === sortKey && <span className={`sort-indicator ${sortOrder === "asc" ? "rotate-up" : "rotate-down"
+                    }`}>-</span>}
+                </th>
               ))}
             </tr>
           </thead>
           <tbody>
-            {paginated.map((row, rowIndex) => (
-              <tr key={rowIndex}>
-                {displayColumns.map((col) => (
-                  <td key={col.key}>{col.accessor(row)}</td>
-                ))}
+            {paginated.length > 0 ? (
+              paginated.map((row, rowIndex) => (
+                <tr key={rowIndex}>
+                  {displayColumns.map((col) => (
+                    <td key={col.key}>{col.accessor(row)}</td>
+                  ))}
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={displayColumns.length} className="text-center py-4 text-gray-500">
+                  No events available
+                </td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
 

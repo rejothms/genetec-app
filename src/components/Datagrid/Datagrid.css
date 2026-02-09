@@ -1,5 +1,5 @@
 .datagrid-container {
-    display: flex;
+  display: flex;
   flex-direction: column;
   height: 100%;
 }
@@ -8,16 +8,16 @@
 .datagrid-header {
   display: flex;
   justify-content: space-between;
-  padding: 12px 16px;
+  padding: 0.75rem 1rem;
   background-color: #ffffff;
   border: 1px solid #e6e8eb;
-  border-radius: 8px;
+  border-radius: 0.5rem;
   flex-wrap: wrap;
 }
 
 .datagrid-filters {
   display: flex;
-  gap: 16px;
+  gap: 1rem;
   align-items: center;
   flex-wrap: wrap;
 }
@@ -25,7 +25,7 @@
 .datagrid-search {
   padding: 6px 12px;
   margin-top: 18px;
-  font-size: 13px;
+  font-size: 0.75rem;
   border-radius: 6px;
   border: 1px solid #d0d5dd;
   align-items: center;
@@ -35,18 +35,18 @@
 table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 14px;
-    font-family: var(--font-ui);
+  font-size: 0.875rem;
+  font-family: var(--font-ui);
   font-variant-numeric: tabular-nums;
 }
 
 
 
 thead th {
-  background: #2f2b43; 
+  background: #2f2b43;
   color: #ffffff;
   text-align: left;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 500;
   padding: 12px;
   text-transform: uppercase;
@@ -58,12 +58,12 @@ thead th {
 thead input {
   width: 90%;
   padding: 4px;
-  font-size: 12px;
+  font-size: 0.75rem;
 }
 
 tbody td {
   padding: 12px;
-  font-size: 14px;
+  font-size: 0.875rem;
   color: #333;
   border-bottom: 1px solid #f0f0f0;
 }
@@ -87,6 +87,7 @@ button {
   padding: 6px 10px;
   cursor: pointer;
 }
+
 button:disabled {
   cursor: not-allowed;
   opacity: 0.5;
@@ -97,27 +98,27 @@ button:disabled {
   justify-content: space-between;
   align-items: center;
   padding: 12px 16px;
-  
+
   background: #ffffff;
   border: 1px solid #e6e8eb;
   border-radius: 8px;
 
-   flex-shrink: 0;
-   
+  flex-shrink: 0;
+
 }
 
 .page-count-label {
-   display: flex;
-   align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .datagrid-filter {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .datagrid-filter label {
-  font-size: 12px;
+  font-size: 0.875rem;
   font-weight: 500;
   color: #555;
   margin-bottom: 4px;
@@ -127,8 +128,8 @@ button:disabled {
   min-width: 140px;
   height: 34px;
   padding-left: 8px;
-  padding-right: 36px; 
-  font-size: 13px;
+  padding-right: 36px;
+  font-size: 0.80rem;
   border-radius: 6px;
   border: 1px solid #d0d5dd;
   background-color: #fff;
@@ -141,6 +142,7 @@ button:disabled {
   background-size: 12px;
   box-sizing: border-box;
 }
+
 .datagrid-body {
   background: #ffffff;
   border: 1px solid #e6e8eb;
@@ -151,24 +153,23 @@ button:disabled {
 }
 
 .sort-indicator {
-  width: 10px;
-  height: 10px;
+  width: 14px;
+  height: 14px;
   margin-left: 6px;
   position: relative;
-  top: 5px;
+  background-color: #fff;
+  top: 2px;
   display: inline-block;
-
-  background-color: currentColor;
-
   -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 9L12 15L18 9' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat center / contain;
-          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 9L12 15L18 9' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat center / contain;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 9L12 15L18 9' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat center / contain;
 
   transition: transform 0.2s ease;
 }
+
 .rotate-up {
-  transform: rotate(180deg); 
+  transform: rotate(180deg);
 }
 
 .rotate-down {
-  transform: rotate(0deg); 
+  transform: rotate(0deg);
 }

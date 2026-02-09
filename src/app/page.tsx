@@ -6,7 +6,7 @@ import { Suspense } from 'react';
 import LoadingSpinner from './loading';
 
 async function getEvents(): Promise<EventItem[]> {
-  const res = await fetch("http://localhost:3000/api/event", {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/event`, {
     cache: "no-store",
   });
   if (!res.ok) {
@@ -23,15 +23,11 @@ async function EventsWrapper() {
 
 export default async function Home() {
 
-
   return (
     <div className="min-h-screen w-full bg-zinc-50">
-      <main className="min-h-screen w-full">
-         <Suspense fallback={<LoadingSpinner />}>
-         <EventsWrapper />
-        </Suspense>
-         
-      </main>
+      <Suspense fallback={<LoadingSpinner />}>
+        <EventsWrapper />
+      </Suspense>
     </div>
   );
 }

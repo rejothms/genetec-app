@@ -1,6 +1,6 @@
 'use client';
 import { FC, KeyboardEvent } from "react";
-import { formatDayLabel, groupedByDay } from "./Timeline.utils";
+import { formatDayLabel, getStatusColor, groupedByDay } from "./Timeline.utils";
 import './Timeline.css';
 import { TimelineProps } from "@/types/events";
 
@@ -18,32 +18,24 @@ export const TimeLine: FC<TimelineProps> = ({ events }) => {
         const currentIndex = focusableElements.indexOf(document.activeElement as HTMLElement);
         if (currentIndex === -1) return;
 
-        e.preventDefault(); 
+        e.preventDefault();
         let nextIndex = currentIndex;
         if (key === 'ArrowDown' || key === 'ArrowRight') {
             nextIndex = (currentIndex + 1) % focusableElements.length;
         } else if (key === 'ArrowUp' || key === 'ArrowLeft') {
             nextIndex = (currentIndex - 1 + focusableElements.length) % focusableElements.length;
         }
-
         focusableElements[nextIndex]?.focus();
     };
 
-    const getStatusColor = (priority: string) => {
-        switch (priority.toLowerCase()) {
-            case 'high': return '#ef4444';
-            case 'medium': return '#f59e0b';
-            case 'low': return '#9ca3af';
-            default: return '#10b981';
-        }
-    };
+
 
     return (
-        <main className="timeline-container" onKeyDown={handleKeyDown}>
+        <main aria-label="Event timeline" className="timeline-container" onKeyDown={handleKeyDown}>
             {Object.entries(eventsByDate).map(([date, dayEvents]) => (
-                <section key={date} className="timeline-card" >
+                <section key={date} className="timeline-card" aria-labelledby={`timeline-day-header-${date}`}>
                     <div className="timeline-card-header">
-                        <h3 className="timeline-day-header" tabIndex={0}>
+                        <h3 id={`timeline-day-header-${date}`} className="timeline-day-header" tabIndex={0}>
                             {formatDayLabel(date)}
                             <span className="event-count">({dayEvents.length} events)</span>
                         </h3>
@@ -51,10 +43,14 @@ export const TimeLine: FC<TimelineProps> = ({ events }) => {
 
                     <div className="timeline-day-events">
                         <div className="timeline-vertical-line" />
-                        <ul className="timeline-event-list">
+                        <ul className="timeline-event-list" role="list" aria-label={`Events on ${formatDayLabel(date)}`}>
                             {dayEvents.map(event => (
-                                <li className="timeline-event" key={event.id} >
-                                    <div className="timeline-event-time" tabIndex={0}>
+                                <li className="timeline-event" key={event.id} role="listitem" >
+                                    <div className="timeline-event-time" tabIndex={0} aria-label={`Event time ${new Date(event.startAt).toLocaleTimeString([], {
+                                        hour: '2-digit',
+                                        minute: '2-digit',
+                                        hour12: false
+                                    })}`}>
                                         {new Date(event.startAt).toLocaleTimeString([], {
                                             hour: '2-digit',
                                             minute: '2-digit',
@@ -62,7 +58,7 @@ export const TimeLine: FC<TimelineProps> = ({ events }) => {
                                         })}
                                     </div>
 
-                                    <div className="timeline-event-content" tabIndex={0}>
+                                    <div className="timeline-event-content" tabIndex={0} role="group" aria-label={`${event.title}, owned by ${event.owner}, status ${event.status}, priority ${event.priority}`}>
                                         <span
                                             className="timeline-event-dot"
                                             style={{ backgroundColor: getStatusColor(event.priority) }}
