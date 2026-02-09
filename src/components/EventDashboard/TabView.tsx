@@ -6,13 +6,21 @@ import { EventItem } from "@/types/events";
 import { eventColumns } from "@/utils/datagrid/event.columns";
 import { TimeLine } from "../Timeline/Timeline";
 import { CreateEventModal } from "../CreateEvent/CreateEvent";
+import { usePathname, useRouter } from "next/navigation";
 
 export default function TabView({ events }: { events: EventItem[] }) {
-  const [activeTab, setActiveTab] = useState<"dashboard" | "timeline">("dashboard");
+
+ // const [activeTab, setActiveTab] = useState<"dashboard" | "timeline">("dashboard");
   const [showAddEvent, setShowAddEvent] = useState<boolean>(false);
   const [eventList, setEventList] = useState<EventItem[]>(events);
   const [selectedEvent, setSelectedEvent] = useState<EventItem | null>(null);
   const updatedColumns = eventColumns({ onEdit: handleEdit, onDelete: handleDelete });
+
+  const router = useRouter();
+const pathname = usePathname();
+
+const activeTab: "dashboard" | "timeline" =
+  pathname.includes("timeline") ? "timeline" : "dashboard";
 
   function handleEdit(row: EventItem) {
     setSelectedEvent(row);
@@ -78,7 +86,7 @@ export default function TabView({ events }: { events: EventItem[] }) {
               role="tab"
               aria-selected={activeTab === "dashboard"}
               aria-controls="dashboard-panel"
-              onClick={() => setActiveTab("dashboard")}
+              onClick={() => router.push("/dashboard")}
               className={`px-4 py-3 text-sm font-medium transition
                 ${activeTab === "dashboard"
                   ? "border-b-2 border-blue-500 text-blue-600"
@@ -93,7 +101,7 @@ export default function TabView({ events }: { events: EventItem[] }) {
               role="tab"
               aria-selected={activeTab === "timeline"}
               aria-controls="timeline-panel"
-              onClick={() => setActiveTab("timeline")}
+              onClick={() => router.push("/timeline")}
               className={`px-4 py-3 text-sm font-medium transition
                 ${activeTab === "timeline"
                   ? "border-b-2 border-blue-500 text-blue-600"

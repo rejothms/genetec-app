@@ -4,7 +4,7 @@ import { DataGridProps } from "./Datagrid.types";
 import './Datagrid.css'
 import { useEffect, useMemo, useState } from "react";
 import { Pagination } from "./Pagination";
-import { cp } from "fs";
+
 
 export const Datagrid = <T,>(
   props: DataGridProps<T>
